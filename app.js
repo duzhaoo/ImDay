@@ -62,6 +62,9 @@ async function initApp() {
         // 事件绑定 - 用户菜单
         addSafeListener('closeUserModalBtn', 'click', hideUserModal);
         
+        // 设置模态框点击外部关闭
+        setupModalCloseHandlers();
+        
         // 初始化日期选择器
         initDatePicker();
     } catch (error) {
@@ -182,27 +185,31 @@ function hideUserModal() {
 
 // 数据同步函数
 async function syncWithCloud() {
-    if (isLocalOnly) {
-        showToast('您处于离线模式，请登录后同步');
-        return;
-    }
-    
-    if (!currentUser) {
-        showToast('请先登录');
-        return;
-    }
-    
+    // 安全检查
     try {
+        if (isLocalOnly) {
+            showToast('您处于离线模式，请登录后同步');
+            return false;
+        }
+        
+        if (!currentUser) {
+            showToast('请先登录');
+            return false;
+        }
+        
         // 同步到云端
         showToast('正在同步...');
-        const { error } = await syncToCloud(countdowns);
-        if (error) throw new Error(error);
+        const result = await syncToCloud(countdowns);
+        
+        if (result && result.error) {
+            throw new Error(result.error);
+        }
         
         showToast('同步成功！');
         return true;
     } catch (error) {
         console.error('同步失败:', error);
-        showToast('同步失败: ' + error.message);
+        showToast('同步失败: ' + (error.message || '未知错误'));
         return false;
     }
 }
@@ -344,33 +351,40 @@ function saveCountdown() {
 
 // 删除倒数日
 function deleteCountdown() {
-    if (!currentCountdownId) return;
-    
-    const countdown = countdowns.find(c => c.id === currentCountdownId);
-    if (!countdown) return;
-    
-    if (confirm(`确定要删除"${countdown.title}"吗？\n\n删除后无法恢复！`)) {
-        // 从数组中移除
-        countdowns = countdowns.filter(c => c.id !== currentCountdownId);
+    try {
+        if (!currentCountdownId) return;
         
-        // 保存到本地存储
-        saveCountdownsToLocalStorage();
+        const countdown = countdowns.find(c => c.id === currentCountdownId);
+        if (!countdown) return;
         
-        // 如果已登录，同时同步到云端
-        if (currentUser && !isLocalOnly) {
-            syncWithCloud().catch(error => {
-                console.error('自动同步失败:', error);
-            });
+        if (confirm(`确定要删除"${countdown.title}"吗？\n\n删除后无法恢复！`)) {
+            // 从数组中移除
+            countdowns = countdowns.filter(c => c.id !== currentCountdownId);
+            
+            // 保存到本地存储
+            saveCountdownsToLocalStorage();
+            
+            // 如果已登录，同时同步到云端
+            if (currentUser && !isLocalOnly) {
+                // 使用Promise处理异步操作
+                syncWithCloud()
+                    .catch(error => {
+                        console.error('自动同步失败:', error);
+                    });
+            }
+            
+            // 显示成功提示
+            showToast('倒数日删除成功！');
+            
+            // 返回列表页面
+            showListPage();
+            
+            // 清空当前ID
+            currentCountdownId = null;
         }
-        
-        // 显示成功提示
-        showToast('倒数日删除成功！');
-        
-        // 返回列表页面
-        showListPage();
-        
-        // 清空当前ID
-        currentCountdownId = null;
+    } catch (error) {
+        console.error('删除失败:', error);
+        showToast('删除失败: ' + (error.message || '未知错误'));
     }
 }
 
@@ -614,16 +628,23 @@ function handleFileRestore() {
 }
 
 // 点击弹框外部关闭
-window.onclick = function(event) {
-    const backupModal = document.getElementById('backupModal');
-    const userModal = document.getElementById('userModal');
-    
-    if (event.target === backupModal) {
-        hideBackupModal();
-    }
-    
-    if (event.target === userModal) {
-        hideUserModal();
+function setupModalCloseHandlers() {
+    try {
+        // 使用事件委托处理点击事件
+        window.addEventListener('click', function(event) {
+            const backupModal = document.getElementById('backupModal');
+            const userModal = document.getElementById('userModal');
+            
+            if (backupModal && event.target === backupModal) {
+                hideBackupModal();
+            }
+            
+            if (userModal && event.target === userModal) {
+                hideUserModal();
+            }
+        });
+    } catch (error) {
+        console.error('设置模态框关闭处理失败:', error);
     }
 }
 
@@ -754,23 +775,6 @@ function confirmDateSelection() {
     
     closeDatePicker();
 }
-
-// 导出部分函数到全局作用域，用于HTML调用
-window.showListPage = showListPage;
-window.showCreatePage = showCreatePage;
-window.showDetailPage = showDetailPage;
-window.saveCountdown = saveCountdown;
-window.deleteCountdown = deleteCountdown;
-window.showBackupModal = showBackupModal;
-window.hideBackupModal = hideBackupModal;
-window.backupData = backupData;
-window.restoreData = restoreData;
-window.handleFileRestore = handleFileRestore;
-window.openDatePicker = openDatePicker;
-window.closeDatePicker = closeDatePicker;
-window.confirmDateSelection = confirmDateSelection;
-window.syncWithCloud = syncWithCloud;
-window.hideUserModal = hideUserModal;
 
 // 页面加载完成后安全初始化
 document.addEventListener('DOMContentLoaded', () => {
