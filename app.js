@@ -26,14 +26,39 @@ async function initApp() {
         showListPage();
     }
 
-    // 事件绑定
+    // 事件绑定 - 登录页面
     document.getElementById('loginBtn').addEventListener('click', handleLogin);
     document.getElementById('signupBtn').addEventListener('click', handleSignup);
     document.getElementById('skipAuthBtn').addEventListener('click', handleSkipAuth);
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-    document.getElementById('syncBtn').addEventListener('click', syncWithCloud);
+    
+    // 事件绑定 - 列表页面
+    document.getElementById('appTitle').addEventListener('click', showBackupModal);
+    document.getElementById('createBtn').addEventListener('click', showCreatePage);
+    
+    // 事件绑定 - 创建页面
+    document.getElementById('backToListBtn').addEventListener('click', showListPage);
+    document.getElementById('saveBtn').addEventListener('click', saveCountdown);
     document.getElementById('dateDisplay').addEventListener('click', openDatePicker);
-
+    
+    // 事件绑定 - 详情页面
+    document.getElementById('backFromDetailBtn').addEventListener('click', showListPage);
+    document.getElementById('deleteBtn').addEventListener('click', deleteCountdown);
+    
+    // 事件绑定 - 日期选择器
+    document.getElementById('closeDatePickerBtn').addEventListener('click', closeDatePicker);
+    document.getElementById('cancelDateBtn').addEventListener('click', closeDatePicker);
+    document.getElementById('confirmDateBtn').addEventListener('click', confirmDateSelection);
+    
+    // 事件绑定 - 备份弹窗
+    document.getElementById('closeBackupModalBtn').addEventListener('click', hideBackupModal);
+    document.getElementById('backupBtn').addEventListener('click', backupData);
+    document.getElementById('restoreBtn').addEventListener('click', restoreData);
+    document.getElementById('fileInput').addEventListener('change', handleFileRestore);
+    
+    // 事件绑定 - 用户菜单
+    document.getElementById('closeUserModalBtn').addEventListener('click', hideUserModal);
+    
     // 初始化日期选择器
     initDatePicker();
 }
@@ -430,7 +455,7 @@ function renderCountdowns() {
         const subtitle = getSubtitle(countdown);
         
         return `
-            <div class="countdown-card ${cardClass}" onclick="showDetailPage(${countdown.id})">
+            <div class="countdown-card ${cardClass}" data-id="${countdown.id}">
                 <div class="countdown-info">
                     <div class="countdown-title">${countdown.title}</div>
                     <div class="countdown-subtitle">${subtitle}</div>
@@ -442,6 +467,13 @@ function renderCountdowns() {
             </div>
         `;
     }).join('');
+    
+    // 添加事件监听器
+    const cards = container.querySelectorAll('.countdown-card');
+    cards.forEach(card => {
+        const id = parseInt(card.dataset.id);
+        card.addEventListener('click', () => showDetailPage(id));
+    });
 }
 
 // 显示提示消息
@@ -526,8 +558,9 @@ function restoreData() {
 }
 
 // 处理文件恢复
-function handleFileRestore(event) {
-    const file = event.target.files[0];
+function handleFileRestore() {
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
     if (!file) return;
     
     if (!file.name.endsWith('.json')) {
@@ -569,7 +602,7 @@ function handleFileRestore(event) {
     
     reader.readAsText(file);
     // 清空文件输入，允许重复选择同一文件
-    event.target.value = '';
+    fileInput.value = '';
 }
 
 // 点击弹框外部关闭

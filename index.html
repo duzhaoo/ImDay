@@ -8,6 +8,7 @@
     <link rel="icon" href="icon-192x192.png">
     <meta name="theme-color" content="#FFFFFF">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="倒数日">
     <link rel="apple-touch-icon" href="icon-192x192.png">
@@ -45,9 +46,9 @@
         <!-- 列表页面 -->
         <div class="page hidden" id="listPage">
             <header class="list-header">
-                <h1 onclick="showBackupModal()">倒数日</h1>
+                <h1 id="appTitle">倒数日</h1>
                 <div class="header-actions">
-                    <button class="add-btn" onclick="showCreatePage()">+</button>
+                    <button class="add-btn" id="createBtn">+</button>
                 </div>
             </header>
             <main class="list-main">
@@ -58,9 +59,9 @@
         <!-- 创建页面 -->
         <div class="page hidden" id="createPage">
             <header class="create-header">
-                <button class="back-btn" onclick="showListPage()">←</button>
+                <button class="back-btn" id="backToListBtn">←</button>
                 <h1>新建倒数日</h1>
-                <button class="save-btn" onclick="saveCountdown()">保存</button>
+                <button class="save-btn" id="saveBtn">保存</button>
             </header>
             <main class="create-main">
                 <form id="countdownForm">
@@ -90,9 +91,9 @@
         <!-- 详情页面 -->
         <div class="page hidden" id="detailPage">
             <header class="detail-header">
-                <button class="back-btn" onclick="showListPage()">←</button>
+                <button class="back-btn" id="backFromDetailBtn">←</button>
                 <h1>详情</h1>
-                <button class="delete-btn" onclick="deleteCountdown()">
+                <button class="delete-btn" id="deleteBtn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="3,6 5,6 21,6"></polyline>
                         <path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>
@@ -119,7 +120,7 @@
             <div class="date-picker-content">
                 <div class="date-picker-header">
                     <h3>选择日期</h3>
-                    <button class="close-btn" onclick="closeDatePicker()">×</button>
+                    <button class="close-btn" id="closeDatePickerBtn">×</button>
                 </div>
                 <div class="date-picker-body">
                     <div class="date-selectors">
@@ -137,8 +138,8 @@
                         </div>
                     </div>
                     <div class="date-picker-actions">
-                        <button class="cancel-btn" onclick="closeDatePicker()">取消</button>
-                        <button class="confirm-btn" onclick="confirmDateSelection()">确定</button>
+                        <button class="cancel-btn" id="cancelDateBtn">取消</button>
+                        <button class="confirm-btn" id="confirmDateBtn">确定</button>
                     </div>
                 </div>
             </div>
@@ -149,12 +150,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3>数据管理</h3>
-                <button class="close-btn" onclick="hideBackupModal()">&times;</button>
+                <button class="close-btn" id="closeBackupModalBtn">&times;</button>
             </div>
             <div class="modal-body">
-                <button class="backup-btn" onclick="backupData()">📤 备份数据</button>
-                <button class="restore-btn" onclick="restoreData()">📥 恢复数据</button>
-                <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="handleFileRestore(event)">
+                <button class="backup-btn" id="backupBtn">📤 备份数据</button>
+                <button class="restore-btn" id="restoreBtn">📥 恢复数据</button>
+                <input type="file" id="fileInput" accept=".json" style="display: none;">
             </div>
         </div>
     </div>
@@ -164,7 +165,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3>用户信息</h3>
-                <button class="close-btn" onclick="hideUserModal()">&times;</button>
+                <button class="close-btn" id="closeUserModalBtn">&times;</button>
             </div>
             <div class="modal-body">
                 <div id="userInfo" class="user-info">
