@@ -1,0 +1,1402 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f5f5;
+    min-height: 100vh;
+    color: #333;
+}
+
+.app {
+    max-width: 414px;
+    margin: 0 auto;
+    background: white;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: white;
+    transition: transform 0.3s ease;
+}
+
+.page.hidden {
+    transform: translateX(100%);
+}
+
+/* 列表页面样式 */
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: white;
+}
+
+.list-header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.add-btn {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #FF6347, #FF4500);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: 300;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(255, 99, 71, 0.3);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.list-main {
+    padding: 20px;
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+
+.countdown-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* 倒数日卡片样式 */
+.countdown-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(0,0,0,0.04);
+    position: relative;
+    overflow: hidden;
+}
+
+.countdown-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #FF6347, #FF4500);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* 悬浮效果已移除 */
+
+.countdown-info {
+    flex: 1;
+    padding-right: 16px;
+}
+
+.countdown-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 6px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.countdown-subtitle {
+    display: block;
+    font-size: 0.9rem;
+    color: #999;
+    margin-top: 4px;
+}
+
+.countdown-days-container {
+    text-align: center;
+    min-width: 70px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    position: relative;
+}
+
+.countdown-days {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: white;
+    line-height: 1;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.countdown-label {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.9);
+    margin: 0;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* 统一橙红色渐变 */
+.countdown-card .countdown-days-container {
+    background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
+    border-radius: 12px;
+    padding: 12px 10px;
+    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.countdown-card .countdown-days-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* 创建页面样式 */
+.create-header, .detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    position: relative;
+}
+
+.create-header h1, .detail-header h1 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #222;
+    letter-spacing: -0.5px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+}
+
+.back-btn {
+    background: rgba(255, 69, 0, 0.1);
+    border: none;
+    font-size: 1.3rem;
+    color: #FF4500;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+    background: rgba(255, 69, 0, 0.15);
+    transform: scale(1.05);
+}
+
+.save-btn {
+    background: linear-gradient(135deg, #FF6347, #FF4500);
+    border: none;
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+    transition: all 0.2s ease;
+    letter-spacing: 0.5px;
+}
+
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 99, 71, 0.4);
+}
+
+.save-btn:active {
+    transform: translateY(0);
+}
+
+.delete-btn {
+    background: rgba(255, 69, 0, 0.1);
+    border: none;
+    color: #FF4500;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.delete-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2;
+}
+
+.delete-btn:hover {
+    background: rgba(255, 69, 0, 0.15);
+    transform: scale(1.05);
+}
+
+.delete-btn:active {
+    transform: scale(0.95);
+}
+
+.create-main {
+    padding: 30px 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    min-height: calc(100vh - 80px);
+}
+
+/* 表单字段样式 */
+.form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+label {
+    display: block;
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+textarea,
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #f9f9f9;
+    color: #333;
+    transition: all 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus,
+textarea:focus,
+select:focus {
+    border-color: #FF6347;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 99, 71, 0.2);
+    background: #fff;
+}
+
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder,
+textarea::placeholder {
+    color: #aaa;
+}
+
+/* 自定义日期选择器样式 */
+.custom-date-picker {
+    position: relative;
+    width: 100%;
+}
+
+.date-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 18px 20px;
+    border: 2px solid #E8E8ED;
+    border-radius: 16px;
+    font-size: 16px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    font-weight: 500;
+    box-sizing: border-box;
+    min-height: 58px;
+}
+
+.date-display:hover {
+    border-color: #4A90E2;
+    box-shadow: 0 4px 20px rgba(74, 144, 226, 0.1);
+}
+
+.date-display:focus-within {
+    border-color: #4A90E2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    outline: none;
+}
+
+#selectedDate {
+    color: #333;
+    flex: 1;
+}
+
+#selectedDate.placeholder {
+    color: #999;
+}
+
+.date-icon {
+    width: 20px;
+    height: 20px;
+    color: #666;
+    stroke-width: 2;
+}
+
+/* 日期选择器弹框样式 */
+.date-picker-modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.date-picker-content {
+    background-color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 0;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 380px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: datePickerSlideIn 0.3s ease-out;
+}
+
+@keyframes datePickerSlideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.date-picker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.date-picker-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+    background: #f5f5f5;
+    color: #666;
+}
+
+.date-picker-body {
+    padding: 20px 24px 24px;
+}
+
+.date-selectors {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.selector-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.selector-group label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #666;
+    margin: 0;
+}
+
+.date-select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #E8E8ED;
+    border-radius: 12px;
+    font-size: 16px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23666" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px;
+    padding-right: 40px;
+}
+
+.date-select:focus {
+    outline: none;
+    border-color: #4A90E2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+.date-picker-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.cancel-btn, .confirm-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 80px;
+}
+
+.cancel-btn {
+    background: #f5f5f5;
+    color: #666;
+}
+
+.cancel-btn:hover {
+    background: #e8e8e8;
+}
+
+.confirm-btn {
+    background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
+    color: white;
+}
+
+.confirm-btn:hover {
+    background: linear-gradient(135deg, #FF4500 0%, #E03E00 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 99, 71, 0.3);
+}
+
+/* 日期选择器响应式设计 */
+@media (max-width: 480px) {
+    .date-picker-content {
+        width: 95%;
+        border-radius: 16px;
+    }
+    
+    .date-picker-header {
+        padding: 16px 20px 12px;
+    }
+    
+    .date-picker-header h3 {
+        font-size: 1.1rem;
+    }
+    
+    .date-picker-body {
+        padding: 16px 20px 20px;
+    }
+    
+    .date-selectors {
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+    
+    .selector-group {
+        flex: none;
+    }
+    
+    .date-select {
+        padding: 14px 16px;
+        font-size: 16px;
+    }
+    
+    .date-picker-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .cancel-btn, .confirm-btn {
+        width: 100%;
+        padding: 14px 24px;
+    }
+    
+    .date-display {
+        padding: 16px 18px;
+        min-height: 54px;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+    .date-picker-content {
+        width: 85%;
+        max-width: 400px;
+    }
+    
+    .date-selectors {
+        gap: 16px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .date-picker-content {
+        width: 70%;
+        max-width: 420px;
+    }
+    
+    .date-picker-header {
+        padding: 24px 28px 20px;
+    }
+    
+    .date-picker-body {
+        padding: 24px 28px 28px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .date-picker-content {
+        width: 50%;
+        max-width: 450px;
+    }
+    
+    .date-picker-header {
+        padding: 28px 32px 24px;
+    }
+    
+    .date-picker-body {
+        padding: 28px 32px 32px;
+    }
+    
+    .date-selectors {
+        gap: 20px;
+    }
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus {
+    outline: none;
+}
+
+input[type="text"]::placeholder {
+    color: #999;
+    font-weight: 400;
+}
+
+/* 表单增强效果已移除 */
+
+/* 详情页面样式 */
+.detail-main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    height: calc(100vh - 80px);
+    padding: 60px 20px 20px;
+    background: #f8f9fa;
+}
+
+.detail-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-top: -20px;
+}
+
+.detail-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.detail-content {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
+    border-radius: 15px;
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+/* 所有状态统一使用橙红渐变 */
+.detail-content.past {
+    background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
+    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+}
+
+/* 今天 - 橙红渐变 */
+.detail-content.today {
+    background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
+    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+}
+
+/* 未来7天内 - 橙红渐变 */
+.detail-content.future-soon {
+    background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
+    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+}
+
+/* 未来8-30天 - 橙红渐变 */
+.detail-content.future-near {
+    background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
+    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+}
+
+/* 未来30天以上 - 橙红渐变 */
+.detail-content.future-far {
+    background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
+    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+}
+
+.detail-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.detail-days {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: white !important;
+    margin-bottom: 8px;
+    line-height: 1;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    position: relative;
+    z-index: 1;
+}
+
+.detail-label {
+    font-size: 1.2rem;
+    color: white !important;
+    margin: 0;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 1;
+    opacity: 0.9;
+}
+
+/* 确保所有状态下文字都是白色 */
+.detail-content.past .detail-days,
+.detail-content.today .detail-days,
+.detail-content.future-soon .detail-days,
+.detail-content.future-near .detail-days,
+.detail-content.future-far .detail-days {
+    color: white !important;
+}
+
+.detail-content.past .detail-label,
+.detail-content.today .detail-label,
+.detail-content.future-soon .detail-label,
+.detail-content.future-near .detail-label,
+.detail-content.future-far .detail-label {
+    color: white !important;
+}
+
+.detail-date {
+    font-size: 1.1rem;
+    color: #999;
+    font-weight: 500;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+/* 空状态样式 */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
+
+.empty-state h3 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: #666;
+}
+
+.empty-state p {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* 小屏手机适配 */
+@media (max-width: 480px) {
+    .app {
+        max-width: 100%;
+        margin: 0;
+        border-radius: 0;
+    }
+    
+    .list-header, .create-header, .detail-header {
+        padding: 16px 20px;
+    }
+    
+    .list-main, .create-main {
+        padding: 16px;
+    }
+    
+    .countdown-card {
+        padding: 14px;
+        margin-bottom: 12px;
+    }
+    
+    .countdown-days {
+        font-size: 1.8rem;
+    }
+    
+    .countdown-title {
+        font-size: 0.95rem;
+    }
+    
+    .detail-days {
+        font-size: 3.5rem;
+    }
+    
+    .detail-card {
+        padding: 30px 20px;
+        margin: 10px;
+    }
+    
+    .detail-title {
+        font-size: 1.5rem;
+    }
+    
+    .form-group {
+        margin-bottom: 18px;
+    }
+    
+    input[type="text"],
+    input[type="date"] {
+        padding: 16px 18px;
+        font-size: 16px;
+    }
+}
+
+/* 中等屏幕手机适配 */
+@media (min-width: 481px) and (max-width: 767px) {
+    .app {
+        max-width: 100%;
+        margin: 0;
+    }
+    
+    .countdown-card {
+        padding: 16px;
+        margin-bottom: 14px;
+    }
+    
+    .countdown-days {
+        font-size: 2rem;
+    }
+    
+    .detail-card {
+        padding: 35px 25px;
+        margin: 15px;
+    }
+    
+    .detail-days {
+        font-size: 3.8rem;
+    }
+}
+
+/* iPad 和平板适配 */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .app {
+        max-width: 600px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        border-radius: 20px;
+        margin-top: 20px;
+        min-height: calc(100vh - 40px);
+    }
+    
+    .list-header, .create-header, .detail-header {
+        padding: 24px 30px;
+    }
+    
+    .list-main, .create-main {
+        padding: 20px 30px;
+    }
+    
+    .countdown-card {
+        padding: 20px;
+        margin-bottom: 16px;
+    }
+    
+    .countdown-days {
+        font-size: 2.2rem;
+    }
+    
+    .countdown-title {
+        font-size: 1.1rem;
+    }
+    
+    .detail-card {
+        padding: 40px 30px;
+        margin: 20px;
+    }
+    
+    .detail-days {
+        font-size: 4rem;
+    }
+    
+    .detail-title {
+        font-size: 1.8rem;
+    }
+    
+    .form-group {
+        margin-bottom: 24px;
+    }
+    
+    .form-group label {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+    
+    input[type="text"],
+    input[type="date"] {
+        padding: 20px 24px;
+        font-size: 1.1rem;
+    }
+}
+
+/* 大屏幕适配 */
+@media (min-width: 1025px) {
+    .app {
+        max-width: 500px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.15);
+        border-radius: 24px;
+        margin-top: 40px;
+        min-height: calc(100vh - 80px);
+    }
+    
+    .list-header, .create-header, .detail-header {
+        padding: 28px 32px;
+    }
+    
+    .list-main, .create-main {
+        padding: 24px 32px;
+    }
+}
+
+/* 动画效果 */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.countdown-card {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* 触摸反馈 */
+.countdown-card:active {
+    transform: scale(0.98);
+}
+
+.add-btn:active,
+.back-btn:active,
+.save-btn:active,
+.delete-btn:active {
+    opacity: 0.7;
+}
+
+.countdown-list {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.countdown-list h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.3rem;
+}
+
+.countdown-item {
+    background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.countdown-item:last-child {
+    margin-bottom: 0;
+}
+
+.countdown-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.countdown-item:hover::before {
+    opacity: 1;
+}
+
+.countdown-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.countdown-date {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 15px;
+}
+
+.countdown-days {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.countdown-label {
+    font-size: 0.8rem;
+    text-align: center;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+.empty-state {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 40px 20px;
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .add-countdown,
+    .countdown-list {
+        padding: 20px;
+    }
+}
+
+/* 备份恢复弹框样式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 50% auto;
+    padding: 0;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 320px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    transform: translateY(-50%);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+/* 模态框响应式设计 */
+@media (min-width: 768px) {
+    .modal-content {
+        margin: 40% auto;
+        max-width: 400px;
+        border-radius: 24px;
+    }
+    
+    .modal-header {
+        padding: 24px 30px 20px;
+    }
+    
+    .modal-header h2 {
+        font-size: 1.3rem;
+    }
+    
+    .modal-body {
+        padding: 0 30px 30px;
+    }
+    
+    .backup-btn, .restore-btn {
+        padding: 16px 24px;
+        font-size: 1.1rem;
+    }
+}
+
+@media (min-width: 1025px) {
+    .modal-content {
+        margin: 35% auto;
+        max-width: 450px;
+    }
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-60%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+    background-color: #f5f5f5;
+    color: #666;
+}
+
+.modal-body {
+    padding: 20px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.backup-btn, .restore-btn {
+    padding: 14px 20px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.backup-btn {
+    background: linear-gradient(135deg, #FF6347, #FF4500);
+    color: white;
+}
+
+.backup-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 99, 71, 0.3);
+}
+
+.restore-btn {
+    background: linear-gradient(135deg, #FF6347, #FF4500);
+    color: white;
+}
+
+.restore-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 99, 71, 0.3);
+}
+
+.list-header h1 {
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.list-header h1:hover {
+    color: #FF6347;
+}
+
+/* 登录页面样式 */
+.auth-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px 40px;
+    text-align: center;
+}
+
+.auth-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #FF4500;
+    margin-bottom: 10px;
+}
+
+.auth-subtitle {
+    font-size: 0.9rem;
+    color: #777;
+    margin-top: 5px;
+}
+
+.auth-main {
+    padding: 0 30px;
+}
+
+.auth-form {
+    background: #fff;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.1);
+}
+
+.auth-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.auth-btn {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.login-btn {
+    background: linear-gradient(135deg, #FF6347, #FF4500);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 99, 71, 0.4);
+}
+
+.signup-btn {
+    background: white;
+    color: #FF4500;
+    border: 1px solid rgba(255, 69, 0, 0.3);
+}
+
+.signup-btn:hover {
+    background: rgba(255, 69, 0, 0.05);
+}
+
+.auth-skip {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.skip-btn {
+    background: none;
+    border: none;
+    color: #777;
+    font-size: 0.9rem;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.skip-btn:hover {
+    color: #FF4500;
+}
+
+/* 头部操作区域样式 */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sync-btn {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 69, 0, 0.1);
+    color: #FF4500;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sync-btn:hover {
+    background: rgba(255, 69, 0, 0.2);
+    transform: rotate(30deg);
+}
+
+.sync-btn.syncing {
+    animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 用户信息样式 */
+.user-info {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.user-email {
+    font-size: 1rem;
+    word-break: break-all;
+    color: #444;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 12px;
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    background: #d32f2f;
+}
