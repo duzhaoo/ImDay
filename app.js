@@ -6,6 +6,11 @@ let countdowns = [];
 let currentCountdownId = null;
 let isLocalOnly = false; // 是否仅使用本地存储
 
+// 导出必要的函数到全局作用域，用于日期选择器和其他功能
+window.openDatePicker = openDatePicker;
+window.closeDatePicker = closeDatePicker;
+window.confirmDateSelection = confirmDateSelection;
+
 // 初始化应用
 async function initApp() {
     try {
@@ -775,6 +780,15 @@ function confirmDateSelection() {
     
     closeDatePicker();
 }
+
+// 导出必要的函数到全局作用域，用于HTML内联事件处理
+window.openDatePicker = openDatePicker;
+window.closeDatePicker = closeDatePicker;
+window.confirmDateSelection = confirmDateSelection;
+window.showDetailPage = showDetailPage;
+window.showListPage = showListPage;
+window.saveCountdown = saveCountdown;
+window.deleteCountdown = deleteCountdown;
 
 // 页面加载完成后安全初始化
 document.addEventListener('DOMContentLoaded', () => {
