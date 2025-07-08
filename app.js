@@ -8,8 +8,8 @@ let isLocalOnly = false; // 是否仅使用本地存储
 
 // 初始化应用
 async function initApp() {
-    // 检查用户登录状态
     try {
+        // 检查用户登录状态
         const user = await checkUser();
         if (user) {
             // 已登录，直接从云端获取数据
@@ -20,47 +20,55 @@ async function initApp() {
             // 未登录，显示登录页面
             document.getElementById('authPage').classList.remove('hidden');
         }
+
+        // 安全地添加事件监听器的辅助函数
+        const addSafeListener = (id, event, handler) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.addEventListener(event, handler);
+            }
+        };
+
+        // 事件绑定 - 登录页面
+        addSafeListener('loginBtn', 'click', handleLogin);
+        addSafeListener('signupBtn', 'click', handleSignup);
+        addSafeListener('skipAuthBtn', 'click', handleSkipAuth);
+        addSafeListener('logoutBtn', 'click', handleLogout);
+        
+        // 事件绑定 - 列表页面
+        addSafeListener('appTitle', 'click', showBackupModal);
+        addSafeListener('createBtn', 'click', showCreatePage);
+        
+        // 事件绑定 - 创建页面
+        addSafeListener('backToListBtn', 'click', showListPage);
+        addSafeListener('saveBtn', 'click', saveCountdown);
+        addSafeListener('dateDisplay', 'click', openDatePicker);
+        
+        // 事件绑定 - 详情页面
+        addSafeListener('backFromDetailBtn', 'click', showListPage);
+        addSafeListener('deleteBtn', 'click', deleteCountdown);
+        
+        // 事件绑定 - 日期选择器
+        addSafeListener('closeDatePickerBtn', 'click', closeDatePicker);
+        addSafeListener('cancelDateBtn', 'click', closeDatePicker);
+        addSafeListener('confirmDateBtn', 'click', confirmDateSelection);
+        
+        // 事件绑定 - 备份弹窗
+        addSafeListener('closeBackupModalBtn', 'click', hideBackupModal);
+        addSafeListener('backupBtn', 'click', backupData);
+        addSafeListener('restoreBtn', 'click', restoreData);
+        addSafeListener('fileInput', 'change', handleFileRestore);
+        
+        // 事件绑定 - 用户菜单
+        addSafeListener('closeUserModalBtn', 'click', hideUserModal);
+        
+        // 初始化日期选择器
+        initDatePicker();
     } catch (error) {
-        console.error('初始化失败:', error);
+        console.error('初始化应用失败:', error);
         loadCountdownsFromLocalStorage(); // 失败时从本地加载
         showListPage();
     }
-
-    // 事件绑定 - 登录页面
-    document.getElementById('loginBtn').addEventListener('click', handleLogin);
-    document.getElementById('signupBtn').addEventListener('click', handleSignup);
-    document.getElementById('skipAuthBtn').addEventListener('click', handleSkipAuth);
-    document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-    
-    // 事件绑定 - 列表页面
-    document.getElementById('appTitle').addEventListener('click', showBackupModal);
-    document.getElementById('createBtn').addEventListener('click', showCreatePage);
-    
-    // 事件绑定 - 创建页面
-    document.getElementById('backToListBtn').addEventListener('click', showListPage);
-    document.getElementById('saveBtn').addEventListener('click', saveCountdown);
-    document.getElementById('dateDisplay').addEventListener('click', openDatePicker);
-    
-    // 事件绑定 - 详情页面
-    document.getElementById('backFromDetailBtn').addEventListener('click', showListPage);
-    document.getElementById('deleteBtn').addEventListener('click', deleteCountdown);
-    
-    // 事件绑定 - 日期选择器
-    document.getElementById('closeDatePickerBtn').addEventListener('click', closeDatePicker);
-    document.getElementById('cancelDateBtn').addEventListener('click', closeDatePicker);
-    document.getElementById('confirmDateBtn').addEventListener('click', confirmDateSelection);
-    
-    // 事件绑定 - 备份弹窗
-    document.getElementById('closeBackupModalBtn').addEventListener('click', hideBackupModal);
-    document.getElementById('backupBtn').addEventListener('click', backupData);
-    document.getElementById('restoreBtn').addEventListener('click', restoreData);
-    document.getElementById('fileInput').addEventListener('change', handleFileRestore);
-    
-    // 事件绑定 - 用户菜单
-    document.getElementById('closeUserModalBtn').addEventListener('click', hideUserModal);
-    
-    // 初始化日期选择器
-    initDatePicker();
 }
 
 // 处理现有数据，确保使用正确的字段名
@@ -764,5 +772,25 @@ window.confirmDateSelection = confirmDateSelection;
 window.syncWithCloud = syncWithCloud;
 window.hideUserModal = hideUserModal;
 
-// 页面加载完成后初始化
-document.addEventListener('DOMContentLoaded', initApp);
+// 页面加载完成后安全初始化
+document.addEventListener('DOMContentLoaded', () => {
+    // 使用短延迟确保DOM完全准备好
+    setTimeout(() => {
+        try {
+            initApp().catch(err => {
+                console.error('初始化应用失败:', err);
+                // 降级到本地模式
+                isLocalOnly = true;
+                loadCountdownsFromLocalStorage();
+                showListPage();
+                showToast('云端连接失败，使用本地模式');
+            });
+        } catch (err) {
+            console.error('初始化失败:', err);
+            isLocalOnly = true;
+            loadCountdownsFromLocalStorage();
+            showListPage();
+            showToast('应用初始化失败，使用本地模式');
+        }
+    }, 50);
+});
