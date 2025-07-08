@@ -160,20 +160,17 @@ async function syncWithCloud() {
     }
     
     try {
-        const syncBtn = document.getElementById('syncBtn');
-        syncBtn.classList.add('syncing');
-        
         // 同步到云端
+        showToast('正在同步...');
         const { error } = await syncToCloud(countdowns);
         if (error) throw new Error(error);
         
         showToast('同步成功！');
+        return true;
     } catch (error) {
         console.error('同步失败:', error);
         showToast('同步失败: ' + error.message);
-    } finally {
-        const syncBtn = document.getElementById('syncBtn');
-        syncBtn.classList.remove('syncing');
+        return false;
     }
 }
 
