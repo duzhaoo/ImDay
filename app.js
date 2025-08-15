@@ -14,16 +14,33 @@ window.confirmDateSelection = confirmDateSelection;
 // 初始化应用
 async function initApp() {
     try {
+        // 先检查本地是否有数据，如果有则直接显示列表页
+        const localData = localStorage.getItem('countdowns');
+        if (localData && JSON.parse(localData).length > 0) {
+            // 有本地数据，先显示列表页
+            loadCountdownsFromLocalStorage();
+            showListPage();
+        }
+        
         // 检查用户登录状态
         const user = await checkUser();
         if (user) {
-            // 已登录，直接从云端获取数据
-            showListPage();
+            // 已登录，从云端获取数据并更新
             await loadCountdownsFromCloud();
             updateUserInfo(user);
+            // 确保显示列表页
+            if (!document.getElementById('listPage').classList.contains('hidden')) {
+                // 已经在列表页，只需要重新渲染
+                renderCountdowns();
+            } else {
+                showListPage();
+            }
         } else {
-            // 未登录，显示登录页面
-            document.getElementById('authPage').classList.remove('hidden');
+            // 未登录且没有本地数据，显示登录页面
+            if (!localData || JSON.parse(localData).length === 0) {
+                document.getElementById('authPage').classList.remove('hidden');
+                document.getElementById('listPage').classList.add('hidden');
+            }
         }
 
         // 安全地添加事件监听器的辅助函数
@@ -792,6 +809,9 @@ window.deleteCountdown = deleteCountdown;
 
 // 页面加载完成后安全初始化
 document.addEventListener('DOMContentLoaded', () => {
+    // 立即隐藏登录页面，避免闪烁
+    document.getElementById('authPage').classList.add('hidden');
+    
     // 使用短延迟确保DOM完全准备好
     setTimeout(() => {
         try {
