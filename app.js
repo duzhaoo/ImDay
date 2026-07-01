@@ -1,5 +1,6 @@
 // app.js - 主应用逻辑
 import { supabase, currentUser, checkUser, signIn, signUp, signOut, syncCountdowns as syncToCloud, fetchCountdowns as fetchFromCloud } from './supabase.js';
+import { initTheme, cycleTheme, updateThemeButton, setTheme, getSavedTheme, resolveTheme, getThemeIcon } from './theme.js';
 
 // 全局变量
 let countdowns = [];
@@ -43,7 +44,40 @@ async function initApp() {
             }
         }
 
-        // 安全地添加事件监听器的辅助函数
+        // 初始化主题
+    initTheme();
+    
+    // 主题切换按钮事件
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    if (themeToggleBtn) {
+        updateThemeButton(themeToggleBtn);
+        themeToggleBtn.addEventListener('click', () => {
+            cycleTheme();
+            updateThemeButton(themeToggleBtn);
+            // 更新meta theme-color
+            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+            if (metaThemeColor) {
+                const saved = getSavedTheme();
+                const resolved = resolveTheme(saved);
+                metaThemeColor.content = resolved === 'dark' ? '#1a1a2e' : '#FFFFFF';
+            }
+        });
+        // 监听系统主题变化
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                if (getSavedTheme() === 'system') {
+                    updateThemeButton(themeToggleBtn);
+                    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+                    if (metaThemeColor) {
+                        const resolved = resolveTheme('system');
+                        metaThemeColor.content = resolved === 'dark' ? '#1a1a2e' : '#FFFFFF';
+                    }
+                }
+            });
+        }
+    }
+
+    // 安全地添加事件监听器的辅助函数
         const addSafeListener = (id, event, handler) => {
             const element = document.getElementById(id);
             if (element) {

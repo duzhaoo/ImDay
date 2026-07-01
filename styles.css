@@ -4,17 +4,127 @@
     box-sizing: border-box;
 }
 
+/* ===== 主题变量 ===== */
+:root,
+[data-theme="light"] {
+    /* 背景色 */
+    --bg-body: #f5f5f5;
+    --bg-app: #ffffff;
+    --bg-page: #ffffff;
+    --bg-card: #ffffff;
+    --bg-header: #ffffff;
+    --bg-input: #ffffff;
+    --bg-input-focus: #ffffff;
+    --bg-btn-primary: linear-gradient(135deg, #FF6347, #FF4500);
+    --bg-btn-hover: linear-gradient(135deg, #FF4500, #FF6347);
+    --bg-modal-overlay: rgba(0, 0, 0, 0.5);
+    --bg-user-info: #f5f5f5;
+    --bg-tag: #f0f0f0;
+
+    /* 文字色 */
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --text-tertiary: #999999;
+    --text-muted: #777777;
+    --text-heading: #222222;
+    --text-on-primary: #ffffff;
+    --text-link: #FF4500;
+    --text-placeholder: #ccc;
+
+    /* 边框 */
+    --border-color: rgba(0, 0, 0, 0.04);
+    --border-input: #ddd;
+    --border-input-focus: #FF6347;
+    --border-card: rgba(0, 0, 0, 0.04);
+
+    /* 阴影 */
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow-form: 0 4px 30px rgba(0, 0, 0, 0.1);
+    --shadow-btn: 0 4px 15px rgba(255, 99, 71, 0.3);
+    --shadow-strong: 0 8px 25px rgba(255, 99, 71, 0.3);
+
+    /* 渐变 */
+    --gradient-primary: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
+    --gradient-card-hl: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+
+    /* 主题色 */
+    --color-primary: #FF6347;
+    --color-accent: #FF4500;
+    --color-danger: #f44336;
+    --color-danger-hover: #d32f2f;
+}
+
+[data-theme="dark"] {
+    --bg-body: #0d0d1a;
+    --bg-app: #1a1a2e;
+    --bg-page: #1a1a2e;
+    --bg-card: #252540;
+    --bg-header: #1a1a2e;
+    --bg-input: #252540;
+    --bg-input-focus: #2a2a4a;
+    --bg-btn-primary: linear-gradient(135deg, #FF6347, #FF4500);
+    --bg-btn-hover: linear-gradient(135deg, #FF4500, #FF6347);
+    --bg-modal-overlay: rgba(0, 0, 0, 0.7);
+    --bg-user-info: #252540;
+    --bg-tag: #2a2a4a;
+
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --text-tertiary: #888888;
+    --text-muted: #999999;
+    --text-heading: #f0f0f0;
+    --text-on-primary: #ffffff;
+    --text-link: #ff7850;
+    --text-placeholder: #666;
+
+    --border-color: rgba(255, 255, 255, 0.06);
+    --border-input: #3a3a5a;
+    --border-input-focus: #FF6347;
+    --border-card: rgba(255, 255, 255, 0.06);
+
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.3);
+    --shadow-form: 0 4px 30px rgba(0, 0, 0, 0.3);
+    --shadow-btn: 0 4px 15px rgba(255, 99, 71, 0.3);
+    --shadow-strong: 0 8px 25px rgba(255, 99, 71, 0.3);
+
+    --gradient-primary: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
+    --gradient-card-hl: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+
+    --color-primary: #FF6347;
+    --color-accent: #FF4500;
+    --color-danger: #ef5350;
+    --color-danger-hover: #e53935;
+}
+
+/* 平滑过渡 */
+*,
+*::before,
+*::after {
+    transition: background-color 0.3s ease,
+                color 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease,
+                background 0.3s ease;
+}
+
+/* 禁用过渡用于初始加载 */
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
+    transition: none !important;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #f5f5f5;
+    background: var(--bg-body);
     min-height: 100vh;
-    color: #333;
+    color: var(--text-primary);
 }
 
 .app {
     max-width: 414px;
     margin: 0 auto;
-    background: white;
+    background: var(--bg-app);
     min-height: 100vh;
     position: relative;
     overflow: hidden;
@@ -26,7 +136,7 @@ body {
     left: 0;
     width: 100%;
     height: 100vh;
-    background: white;
+    background: var(--bg-app);
     transition: transform 0.3s ease;
 }
 
@@ -40,19 +150,19 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background: white;
+    background: var(--bg-app);
 }
 
 .list-header h1 {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #333;
+    color: var(--text-primary);
 }
 
 .add-btn {
     width: 32px;
     height: 32px;
-    background: linear-gradient(135deg, #FF6347, #FF4500);
+    background: var(--bg-btn-primary);
     color: white;
     border: none;
     border-radius: 50%;
@@ -80,16 +190,16 @@ body {
 
 /* 倒数日卡片样式 */
 .countdown-card {
-    background: white;
+    background: var(--bg-app);
     border-radius: 16px;
     padding: 20px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-card);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid rgba(0,0,0,0.04);
+    border: 1px solid var(--border-card);
     position: relative;
     overflow: hidden;
 }
@@ -116,7 +226,7 @@ body {
 .countdown-title {
     font-size: 1.2rem;
     font-weight: 700;
-    color: #222;
+    color: var(--text-heading);
     margin-bottom: 6px;
     line-height: 1.3;
     display: -webkit-box;
@@ -129,7 +239,7 @@ body {
 .countdown-subtitle {
     display: block;
     font-size: 0.9rem;
-    color: #999;
+    color: var(--text-tertiary);
     margin-top: 4px;
 }
 
@@ -162,10 +272,10 @@ body {
 
 /* 统一橙红色渐变 */
 .countdown-card .countdown-days-container {
-    background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
+    background: var(--gradient-primary);
     border-radius: 12px;
     padding: 12px 10px;
-    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+    box-shadow: var(--shadow-btn);
     position: relative;
     overflow: hidden;
     display: flex;
@@ -182,7 +292,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+    background: var(--gradient-card-hl);
     pointer-events: none;
 }
 
@@ -192,7 +302,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background: white;
+    background: var(--bg-app);
     box-shadow: 0 2px 10px rgba(0,0,0,0.03);
     position: relative;
 }
@@ -200,7 +310,7 @@ body {
 .create-header h1, .detail-header h1 {
     font-size: 1.3rem;
     font-weight: 700;
-    color: #222;
+    color: var(--text-heading);
     letter-spacing: -0.5px;
     position: absolute;
     left: 50%;
@@ -230,7 +340,7 @@ body {
 }
 
 .save-btn {
-    background: linear-gradient(135deg, #FF6347, #FF4500);
+    background: var(--bg-btn-primary);
     border: none;
     color: white;
     font-size: 0.95rem;
@@ -238,7 +348,7 @@ body {
     cursor: pointer;
     padding: 10px 20px;
     border-radius: 20px;
-    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+    box-shadow: var(--shadow-btn);
     transition: all 0.2s ease;
     letter-spacing: 0.5px;
 }
@@ -284,7 +394,7 @@ body {
 
 .create-main {
     padding: 30px 20px;
-    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    background: var(--bg-page);
     min-height: calc(100vh - 80px);
 }
 
@@ -301,7 +411,7 @@ body {
 label {
     display: block;
     font-size: 0.9rem;
-    color: #666;
+    color: var(--text-secondary);
     margin-bottom: 8px;
     font-weight: 500;
 }
@@ -318,8 +428,8 @@ select {
     border: 2px solid #E8E8ED;
     border-radius: 16px;
     font-size: 16px;
-    background: white;
-    color: #333;
+    background: var(--bg-app);
+    color: var(--text-primary);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 2px 10px rgba(0,0,0,0.04);
     font-weight: 500;
@@ -352,7 +462,7 @@ input[type="text"]::placeholder,
 input[type="email"]::placeholder,
 input[type="password"]::placeholder,
 textarea::placeholder {
-    color: #999;
+    color: var(--text-tertiary);
 }
 
 /* 自定义日期选择器样式 */
@@ -370,7 +480,7 @@ textarea::placeholder {
     border: 2px solid #E8E8ED;
     border-radius: 16px;
     font-size: 16px;
-    background: white;
+    background: var(--bg-app);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 2px 10px rgba(0,0,0,0.04);
@@ -391,18 +501,18 @@ textarea::placeholder {
 }
 
 #selectedDate {
-    color: #333;
+    color: var(--text-primary);
     flex: 1;
 }
 
 #selectedDate.placeholder {
-    color: #999;
+    color: var(--text-tertiary);
 }
 
 .date-icon {
     width: 20px;
     height: 20px;
-    color: #666;
+    color: var(--text-secondary);
     stroke-width: 2;
 }
 
@@ -420,7 +530,7 @@ textarea::placeholder {
 }
 
 .date-picker-content {
-    background-color: white;
+    background-color: var(--bg-app);
     position: absolute;
     top: 50%;
     left: 50%;
@@ -456,14 +566,14 @@ textarea::placeholder {
     margin: 0;
     font-size: 1.2rem;
     font-weight: 600;
-    color: #333;
+    color: var(--text-primary);
 }
 
 .close-btn {
     background: none;
     border: none;
     font-size: 24px;
-    color: #999;
+    color: var(--text-tertiary);
     cursor: pointer;
     padding: 0;
     width: 30px;
@@ -476,8 +586,8 @@ textarea::placeholder {
 }
 
 .close-btn:hover {
-    background: #f5f5f5;
-    color: #666;
+    background: var(--bg-body);
+    color: var(--text-secondary);
 }
 
 .date-picker-body {
@@ -500,7 +610,7 @@ textarea::placeholder {
 .selector-group label {
     font-size: 0.9rem;
     font-weight: 500;
-    color: #666;
+    color: var(--text-secondary);
     margin: 0;
 }
 
@@ -510,7 +620,7 @@ textarea::placeholder {
     border: 2px solid #E8E8ED;
     border-radius: 12px;
     font-size: 16px;
-    background: white;
+    background: var(--bg-app);
     cursor: pointer;
     transition: all 0.3s ease;
     appearance: none;
@@ -545,16 +655,16 @@ textarea::placeholder {
 }
 
 .cancel-btn {
-    background: #f5f5f5;
-    color: #666;
+    background: var(--bg-body);
+    color: var(--text-secondary);
 }
 
 .cancel-btn:hover {
-    background: #e8e8e8;
+    background: var(--bg-tag);
 }
 
 .confirm-btn {
-    background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
+    background: var(--gradient-primary);
     color: white;
 }
 
@@ -669,7 +779,7 @@ input[type="date"]:focus {
 }
 
 input[type="text"]::placeholder {
-    color: #999;
+    color: var(--text-tertiary);
     font-weight: 400;
 }
 
@@ -682,11 +792,11 @@ input[type="text"]::placeholder {
     justify-content: center;
     height: calc(100vh - 80px);
     padding: 60px 20px 20px;
-    background: #f8f9fa;
+    background: var(--bg-tag);
 }
 
 .detail-card {
-    background: white;
+    background: var(--bg-app);
     border-radius: 20px;
     padding: 40px 30px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -700,7 +810,7 @@ input[type="text"]::placeholder {
 .detail-title {
     font-size: 1.8rem;
     font-weight: 600;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 30px;
     text-align: center;
 }
@@ -710,10 +820,10 @@ input[type="text"]::placeholder {
     width: 100%;
     margin-bottom: 30px;
     padding: 20px;
-    background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
+    background: var(--gradient-primary);
     border-radius: 15px;
     color: white;
-    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+    box-shadow: var(--shadow-btn);
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
@@ -721,32 +831,32 @@ input[type="text"]::placeholder {
 
 /* 所有状态统一使用橙红渐变 */
 .detail-content.past {
-    background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
-    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+    background: var(--gradient-primary);
+    box-shadow: var(--shadow-btn);
 }
 
 /* 今天 - 橙红渐变 */
 .detail-content.today {
-    background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
-    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+    background: var(--gradient-primary);
+    box-shadow: var(--shadow-btn);
 }
 
 /* 未来7天内 - 橙红渐变 */
 .detail-content.future-soon {
-    background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
-    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+    background: var(--gradient-primary);
+    box-shadow: var(--shadow-btn);
 }
 
 /* 未来8-30天 - 橙红渐变 */
 .detail-content.future-near {
-    background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
-    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+    background: var(--gradient-primary);
+    box-shadow: var(--shadow-btn);
 }
 
 /* 未来30天以上 - 橙红渐变 */
 .detail-content.future-far {
-    background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
-    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+    background: var(--gradient-primary);
+    box-shadow: var(--shadow-btn);
 }
 
 .detail-content::before {
@@ -756,7 +866,7 @@ input[type="text"]::placeholder {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+    background: var(--gradient-card-hl);
     pointer-events: none;
 }
 
@@ -801,10 +911,10 @@ input[type="text"]::placeholder {
 
 .detail-date {
     font-size: 1.1rem;
-    color: #999;
+    color: var(--text-tertiary);
     font-weight: 500;
     padding: 15px;
-    background: #f8f9fa;
+    background: var(--bg-tag);
     border-radius: 10px;
     margin-top: 10px;
 }
@@ -813,13 +923,13 @@ input[type="text"]::placeholder {
 .empty-state {
     text-align: center;
     padding: 60px 20px;
-    color: #999;
+    color: var(--text-tertiary);
 }
 
 .empty-state h3 {
     font-size: 1.2rem;
     margin-bottom: 8px;
-    color: #666;
+    color: var(--text-secondary);
 }
 
 .empty-state p {
@@ -1014,7 +1124,7 @@ input[type="text"]::placeholder {
 }
 
 .countdown-list {
-    background: white;
+    background: var(--bg-app);
     border-radius: 15px;
     padding: 25px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
@@ -1022,12 +1132,12 @@ input[type="text"]::placeholder {
 
 .countdown-list h2 {
     margin-bottom: 20px;
-    color: #333;
+    color: var(--text-primary);
     font-size: 1.3rem;
 }
 
 .countdown-item {
-    background: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
+    background: var(--gradient-primary);
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 15px;
@@ -1084,7 +1194,7 @@ input[type="text"]::placeholder {
 
 .empty-state {
     text-align: center;
-    color: #999;
+    color: var(--text-tertiary);
     font-style: italic;
     padding: 40px 20px;
 }
@@ -1118,7 +1228,7 @@ input[type="text"]::placeholder {
 }
 
 .modal-content {
-    background-color: white;
+    background-color: var(--bg-app);
     margin: 50% auto;
     padding: 0;
     border-radius: 20px;
@@ -1185,14 +1295,14 @@ input[type="text"]::placeholder {
     margin: 0;
     font-size: 1.2rem;
     font-weight: 600;
-    color: #333;
+    color: var(--text-primary);
 }
 
 .close-btn {
     background: none;
     border: none;
     font-size: 24px;
-    color: #999;
+    color: var(--text-tertiary);
     cursor: pointer;
     padding: 0;
     width: 32px;
@@ -1206,7 +1316,7 @@ input[type="text"]::placeholder {
 
 .close-btn:hover {
     background-color: #f5f5f5;
-    color: #666;
+    color: var(--text-secondary);
 }
 
 .modal-body {
@@ -1231,23 +1341,23 @@ input[type="text"]::placeholder {
 }
 
 .backup-btn {
-    background: linear-gradient(135deg, #FF6347, #FF4500);
+    background: var(--bg-btn-primary);
     color: white;
 }
 
 .backup-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(255, 99, 71, 0.3);
+    box-shadow: var(--shadow-strong);
 }
 
 .restore-btn {
-    background: linear-gradient(135deg, #FF6347, #FF4500);
+    background: var(--bg-btn-primary);
     color: white;
 }
 
 .restore-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(255, 99, 71, 0.3);
+    box-shadow: var(--shadow-strong);
 }
 
 .list-header h1 {
@@ -1277,7 +1387,7 @@ input[type="text"]::placeholder {
 
 .auth-subtitle {
     font-size: 0.9rem;
-    color: #777;
+    color: var(--text-muted);
     margin-top: 5px;
 }
 
@@ -1286,10 +1396,10 @@ input[type="text"]::placeholder {
 }
 
 .auth-form {
-    background: #fff;
+    background: var(--bg-app);
     border-radius: 16px;
     padding: 30px;
-    box-shadow: 0 4px 30px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow-form);
 }
 
 .auth-actions {
@@ -1310,9 +1420,9 @@ input[type="text"]::placeholder {
 }
 
 .login-btn {
-    background: linear-gradient(135deg, #FF6347, #FF4500);
+    background: var(--bg-btn-primary);
     color: white;
-    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+    box-shadow: var(--shadow-btn);
 }
 
 .login-btn:hover {
@@ -1321,7 +1431,7 @@ input[type="text"]::placeholder {
 }
 
 .signup-btn {
-    background: white;
+    background: var(--bg-app);
     color: #FF4500;
     border: 1px solid rgba(255, 69, 0, 0.3);
 }
@@ -1338,7 +1448,7 @@ input[type="text"]::placeholder {
 .skip-btn {
     background: none;
     border: none;
-    color: #777;
+    color: var(--text-muted);
     font-size: 0.9rem;
     text-decoration: underline;
     cursor: pointer;
@@ -1379,6 +1489,38 @@ input[type="text"]::placeholder {
     animation: spin 1.5s linear infinite;
 }
 
+/* 主题切换按钮 */
+.theme-btn {
+    width: 32px;
+    height: 32px;
+    background: var(--bg-header);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.theme-btn:hover {
+    background: var(--bg-tag);
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.theme-btn:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+.theme-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
@@ -1388,14 +1530,14 @@ input[type="text"]::placeholder {
 .user-info {
     margin-bottom: 20px;
     padding: 15px;
-    background: #f5f5f5;
+    background: var(--bg-body);
     border-radius: 8px;
 }
 
 .user-email {
     font-size: 1rem;
     word-break: break-all;
-    color: #444;
+    color: var(--text-primary);
 }
 
 .logout-btn {

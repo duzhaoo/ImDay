@@ -1,3 +1,16 @@
-"name": "imday",
+{
+  "name": "imday",
   "version": "1.0.0",
-  "private": true
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "node --experimental-vm-modules tests/test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jsdom": "^24.1.3"
+  },
+  "type": "module"
+}

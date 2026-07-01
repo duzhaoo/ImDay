@@ -48,6 +48,9 @@
             <header class="list-header">
                 <h1 id="appTitle">倒数日</h1>
                 <div class="header-actions">
+                    <button class="theme-btn" id="themeToggleBtn" aria-label="切换主题" title="切换主题">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    </button>
                     <button class="add-btn" id="createBtn">+</button>
                 </div>
             </header>
@@ -176,8 +179,22 @@
         </div>
     </div>
 
+    <script type="module" src="theme.js"></script>
     <script type="module" src="supabase.js"></script>
     <script type="module" src="app.js"></script>
+    <script>
+        // 初始化主题（在DOM加载前尽早执行）
+        (function() {
+            try {
+                var saved = localStorage.getItem('imday-theme') || 'system';
+                var theme = saved;
+                if (theme === 'system') {
+                    theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                }
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch(e) {}
+        })();
+    </script>
     <script>
         // 注册 Service Worker
         if ('serviceWorker' in navigator) {
