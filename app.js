@@ -1,6 +1,6 @@
 // app.js - 主应用逻辑
 import { supabase, currentUser, checkUser, signIn, signUp, signOut, syncCountdowns as syncToCloud, fetchCountdowns as fetchFromCloud } from './supabase.js';
-import { initTheme, cycleTheme, updateThemeButton, setTheme, getSavedTheme, resolveTheme, getThemeIcon } from './theme.js';
+import { initTheme, updateThemeButton, setTheme, getSavedTheme, resolveTheme, getThemeIcon, getThemes } from './theme.js';
 
 // 全局变量
 let countdowns = [];
@@ -49,19 +49,37 @@ async function initApp() {
     
     // 主题切换按钮事件
     const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themePopup = document.getElementById('themePopup');
     if (themeToggleBtn) {
         updateThemeButton(themeToggleBtn);
-        themeToggleBtn.addEventListener('click', () => {
-            cycleTheme();
-            updateThemeButton(themeToggleBtn);
-            // 更新meta theme-color
-            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-            if (metaThemeColor) {
-                const saved = getSavedTheme();
-                const resolved = resolveTheme(saved);
-                metaThemeColor.content = resolved === 'dark' ? '#1a1a2e' : '#FFFFFF';
+
+        // 点击按钮切换弹窗显示状态
+        themeToggleBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const isVisible = themePopup.style.display === 'block';
+            if (isVisible) {
+                themePopup.style.display = 'none';
+            } else {
+                renderThemePopup(themePopup, themeToggleBtn);
+                themePopup.style.display = 'block';
+                // 定位弹窗 - 相对于按钮右下角
+                const rect = themeToggleBtn.getBoundingClientRect();
+                themePopup.style.position = 'fixed';
+                themePopup.style.top = (rect.bottom + 8) + 'px';
+                themePopup.style.left = Math.max(8, rect.right - 200) + 'px';
             }
         });
+
+        // 点击页面其他区域关闭弹窗
+        document.addEventListener('click', (e) => {
+            if (themePopup.style.display === 'block' &&
+                !themePopup.contains(e.target) &&
+                e.target !== themeToggleBtn &&
+                !themeToggleBtn.contains(e.target)) {
+                themePopup.style.display = 'none';
+            }
+        });
+
         // 监听系统主题变化
         if (window.matchMedia) {
             window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
@@ -832,6 +850,43 @@ function confirmDateSelection() {
     closeDatePicker();
 }
 
+// 渲染主题选择弹窗
+function renderThemePopup(popup, toggleBtn) {
+    const currentTheme = getSavedTheme();
+    const themes = getThemes();
+    const themeConfig = {
+        light: { label: '浅色', cls: 'theme-light' },
+        dark: { label: '深色', cls: 'theme-dark' },
+        system: { label: '跟随系统', cls: 'theme-system' }
+    };
+
+    popup.innerHTML = themes.map(theme => {
+        const cfg = themeConfig[theme];
+        const isActive = theme === currentTheme;
+        return `<div class="theme-card ${cfg.cls}${isActive ? ' active' : ''}" data-theme="${theme}">
+            <div class="theme-card-swatch"></div>
+            <span class="theme-card-label">${cfg.label}</span>
+            ${isActive ? '<span class="theme-card-check">✓</span>' : ''}
+        </div>`;
+    }).join('');
+
+    // 卡片点击事件
+    popup.querySelectorAll('.theme-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const theme = card.dataset.theme;
+            setTheme(theme);
+            updateThemeButton(toggleBtn);
+            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+            if (metaThemeColor) {
+                const resolved = resolveTheme(theme);
+                metaThemeColor.content = resolved === 'dark' ? '#1a1a2e' : '#FFFFFF';
+            }
+            popup.style.display = 'none';
+        });
+    });
+}
+
 // 导出必要的函数到全局作用域，用于HTML内联事件处理
 window.openDatePicker = openDatePicker;
 window.closeDatePicker = closeDatePicker;
@@ -840,6 +895,7 @@ window.showDetailPage = showDetailPage;
 window.showListPage = showListPage;
 window.saveCountdown = saveCountdown;
 window.deleteCountdown = deleteCountdown;
+window.renderThemePopup = renderThemePopup;
 
 // 页面加载完成后安全初始化
 document.addEventListener('DOMContentLoaded', () => {

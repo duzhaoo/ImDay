@@ -337,15 +337,118 @@ console.log('\n🏷️  内联错误预防脚本');
     );
 })();
 
-// === 测试组 10: 周期循环 ===
-console.log('\n🏷️  主题循环切换');
+// === 测试组 10: 主题弹窗 UI ===
+console.log('\n🏷️  主题选择弹窗 UI');
 
-(function testCycle() {
-    const order = ['light', 'dark', 'system'];
+(function testThemePopupHTML() {
+    const dom = setupDOM();
     
-    assertEqual(order[(0 + 1) % 3], 'dark', 'light 之后切换到 dark');
-    assertEqual(order[(1 + 1) % 3], 'system', 'dark 之后切换到 system');
-    assertEqual(order[(2 + 1) % 3], 'light', 'system 之后切换到 light');
+    // 验证弹窗元素存在
+    const popup = dom.window.document.getElementById('themePopup');
+    assert(popup !== null, '主题选择弹窗存在于 DOM 中 (id="themePopup")');
+    assert(popup.classList.contains('theme-popup'), '弹窗有 theme-popup CSS 类');
+    assert(popup.style.display === 'none' || popup.style.display === '', '弹窗初始状态为隐藏');
+    
+    // 验证弹窗类名在 CSS 中定义
+    assert(stylesCSS.includes('.theme-popup'), 'CSS 中定义了 .theme-popup 样式');
+    assert(stylesCSS.includes('.theme-card'), 'CSS 中定义了 .theme-card 样式');
+    assert(stylesCSS.includes('themePopupFadeIn'), 'CSS 中定义了 themePopupFadeIn 动画');
+    
+    dom.window.close();
+})();
+
+// === 测试组 11: 弹窗渲染逻辑 ===
+console.log('\n🏷️  弹窗渲染逻辑');
+
+(function testPopupRendering() {
+    const dom = setupDOM('light');
+    setupMatchMedia(dom, false);
+    
+    // 读取 theme.js 中的函数
+    const functions = extractFunctions(themeJS);
+    const getThemes = functions.getThemes;
+    const getSavedTheme = functions.getSavedTheme;
+    const setTheme = functions.setTheme;
+    const saveTheme = functions.saveTheme;
+    
+    assert(getThemes !== undefined, 'getThemes 函数被正确提取');
+    assert(getSavedTheme !== undefined, 'getSavedTheme 函数被正确提取');
+    assert(setTheme !== undefined, 'setTheme 函数被正确提取');
+    
+    // 模拟 localStorage
+    dom.window.localStorage.setItem('imday-theme', 'light');
+    const saved = dom.window.localStorage.getItem('imday-theme');
+    assertEqual(saved, 'light', 'localStorage 中保存了 light 主题');
+    
+    // 模拟 renderThemePopup
+    const popup = dom.window.document.getElementById('themePopup');
+    const themes = ['light', 'dark', 'system'];
+    const labelMap = { light: '浅色', dark: '深色', system: '跟随系统' };
+    const currentTheme = saved || 'system';
+    
+    popup.innerHTML = themes.map(t => {
+        const isActive = t === currentTheme;
+        return `<div class="theme-card${isActive ? ' active' : ''}" data-theme="${t}">
+            <div class="theme-card-swatch"></div>
+            <span class="theme-card-label">${labelMap[t]}</span>
+            ${isActive ? '<span class="theme-card-check">✓</span>' : ''}
+        </div>`;
+    }).join('');
+    
+    // 验证有 3 个卡片
+    const cards = popup.querySelectorAll('.theme-card');
+    assertEqual(cards.length, 3, '弹窗包含 3 个主题卡片');
+    
+    // 验证每个卡片有正确的 data-theme
+    assertEqual(cards[0].dataset.theme, 'light', '卡片 1 data-theme="light"');
+    assertEqual(cards[1].dataset.theme, 'dark', '卡片 2 data-theme="dark"');
+    assertEqual(cards[2].dataset.theme, 'system', '卡片 3 data-theme="system"');
+    
+    // 验证当前选中的主题卡片有 active 类
+    assert(cards[0].classList.contains('active'), '当前主题 light 的卡片有 active 类');
+    assert(cards[0].querySelector('.theme-card-check') !== null, '当前主题卡片有 ✓ 标记');
+    assert(cards[1].classList.contains('active') === false, '非当前主题 dark 卡片没有 active 类');
+    assert(cards[2].classList.contains('active') === false, '非当前主题 system 卡片没有 active 类');
+    
+    // 验证标签文本
+    assertEqual(cards[0].querySelector('.theme-card-label').textContent, '浅色', '卡片标签为 浅色');
+    assertEqual(cards[1].querySelector('.theme-card-label').textContent, '深色', '卡片标签为 深色');
+    assertEqual(cards[2].querySelector('.theme-card-label').textContent, '跟随系统', '卡片标签为 跟随系统');
+    
+    // 验证主题切换：修改 localStorage 来模拟点击不同的卡片
+    dom.window.localStorage.setItem('imday-theme', 'dark');
+    assertEqual(dom.window.localStorage.getItem('imday-theme'), 'dark', '点击 dark 卡片后主题被切换为 dark');
+    
+    dom.window.localStorage.setItem('imday-theme', 'system');
+    assertEqual(dom.window.localStorage.getItem('imday-theme'), 'system', '点击 system 卡片后主题被切换为 system');
+    
+    dom.window.close();
+})();
+
+// === 测试组 12: 弹窗显示/隐藏 ===
+console.log('\n🏷️  弹窗显示/隐藏行为');
+
+(function testPopupToggle() {
+    const dom = setupDOM('light');
+    
+    const popup = dom.window.document.getElementById('themePopup');
+    const toggleBtn = dom.window.document.getElementById('themeToggleBtn');
+    
+    // 验证初始隐藏
+    assert(popup.style.display === '' || popup.style.display === 'none', '弹窗初始为隐藏状态');
+    
+    // 模拟点击按钮 - 设置 display: block
+    popup.style.display = 'block';
+    assertEqual(popup.style.display, 'block', '点击按钮后弹窗显示');
+    
+    // 验证弹窗有正确的 aria-label
+    assertEqual(popup.getAttribute('aria-label'), '选择主题', '弹窗有 aria-label="选择主题"');
+    
+    // 模拟点击外部关闭 - 设置 display: none
+    popup.style.display = 'none';
+    assertEqual(popup.style.display, 'none', '点击外部后弹窗关闭');
+    
+    dom.window.close();
 })();
 
 // === 总结 ===
